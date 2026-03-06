@@ -1,0 +1,271 @@
+<Window
+    x:Class="NupyYTDownloader.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NupyYTDownloader"
+    Title="YT Downloader">
+
+    <Grid x:Name="RootGrid">
+
+        <!-- ══ 레이어 1: 메인 콘텐츠 ══════════════════════════════════════════ -->
+        <Grid x:Name="MainContent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- 헤더 -->
+                <RowDefinition Height="*"/>     <!-- 스크롤 콘텐츠 -->
+            </Grid.RowDefinitions>
+
+            <!-- ── 헤더 (URL 입력) ──────────────────────────────────────────── -->
+            <Border Grid.Row="0"
+                    Padding="16,14,16,14"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    Background="{ThemeResource LayerFillColorDefaultBrush}">
+                <StackPanel Spacing="10">
+
+                    <!-- 앱 타이틀 + 상태 표시 -->
+                    <Grid>
+                        <TextBlock Text="YT Downloader"
+                                   FontWeight="SemiBold"
+                                   FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    Spacing="5"
+                                    VerticalAlignment="Center">
+                            <TextBlock x:Name="StatusLabel"
+                                       Text="yt-dlp"
+                                       FontSize="10"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       VerticalAlignment="Center"/>
+                            <!-- 버전 뱃지 -->
+                            <Border x:Name="VersionBadge"
+                                    Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                    CornerRadius="4"
+                                    Padding="5,1"
+                                    Visibility="Collapsed"
+                                    VerticalAlignment="Center">
+                                <TextBlock x:Name="VersionText"
+                                           Text=""
+                                           FontSize="9"
+                                           FontFamily="Consolas"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Border>
+                            <!-- 업데이트 버튼 (업데이트 필요 시 표시) -->
+                            <Button x:Name="UpdateButton"
+                                    Visibility="Collapsed"
+                                    VerticalAlignment="Center"
+                                    Padding="7,2"
+                                    CornerRadius="4"
+                                    Click="UpdateButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <ProgressRing x:Name="UpdateRing"
+                                                  IsActive="False"
+                                                  Visibility="Collapsed"
+                                                  Width="10" Height="10"/>
+                                    <FontIcon x:Name="UpdateIcon"
+                                              Glyph="&#xE777;"
+                                              FontSize="10"/>
+                                    <TextBlock x:Name="UpdateButtonText"
+                                               Text="업데이트"
+                                               FontSize="10"
+                                               FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                            <Ellipse x:Name="StatusDot"
+                                     Width="8" Height="8"
+                                     Fill="Green"
+                                     VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- URL 입력 박스 -->
+                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                            CornerRadius="8"
+                            Padding="10,8"
+                            BorderThickness="1"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <FontIcon Grid.Column="0"
+                                      Glyph="&#xE71B;"
+                                      FontSize="14"
+                                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,8,0"/>
+
+                            <TextBox x:Name="UrlTextBox"
+                                     Grid.Column="1"
+                                     PlaceholderText="유튜브 링크를 붙여넣으세요 (Ctrl+V)"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     Padding="0"
+                                     VerticalAlignment="Bottom"
+                                    Style="{StaticResource BorderlessTextBoxStyle}"
+                                     KeyDown="UrlTextBox_KeyDown"/>
+
+                            <ProgressRing x:Name="HeaderLoadingRing"
+                                          Grid.Column="2"
+                                          Width="18" Height="18"
+                                          IsActive="False"
+                                          Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 에러 메시지 -->
+                    <TextBlock x:Name="ErrorText"
+                               Foreground="Red"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               Visibility="Collapsed"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ── 스크롤 콘텐츠 영역 ────────────────────────────────────────── -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="0">
+
+                    <!-- 썸네일 + 제목 -->
+                    <Border x:Name="ThumbnailSection"
+                            Padding="16"
+                            Visibility="Collapsed">
+                        <StackPanel Spacing="10">
+                            <Border CornerRadius="10">
+                                <Image x:Name="ThumbnailImage"
+                                       Stretch="UniformToFill"
+                                       MaxHeight="264"/>
+                            </Border>
+                            <TextBlock x:Name="VideoTitleText"
+                                       FontWeight="SemiBold"
+                                       FontSize="14"
+                                       TextWrapping="Wrap"
+                                       MaxLines="2"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 로딩 표시 -->
+                    <StackPanel x:Name="LoadingPanel"
+                                Visibility="Collapsed"
+                                HorizontalAlignment="Center"
+                                Spacing="16"
+                                Padding="0,60,0,0">
+                        <ProgressRing x:Name="FormatLoadingRing"
+                                      IsActive="True"
+                                      Width="44" Height="44"
+                                      HorizontalAlignment="Center"/>
+                        <TextBlock Text="영상 정보 분석 중..."
+                                   HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   FontSize="13"/>
+                    </StackPanel>
+
+                    <!-- 포맷 카드 목록 (코드에서 동적으로 채움) -->
+                    <StackPanel x:Name="FormatsPanel"
+                                Padding="16"
+                                Spacing="10"/>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- ══ 레이어 2: 설치 오류 오버레이 ═══════════════════════════════════ -->
+        <Grid x:Name="ErrorInstallOverlay"
+              Visibility="Collapsed"
+              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16"
+                        MaxWidth="320"
+                        Padding="24">
+
+                <FontIcon Glyph="&#xE7BA;"
+                          FontSize="52"
+                          Foreground="Red"
+                          HorizontalAlignment="Center"/>
+
+                <TextBlock Text="필수 파일을 찾을 수 없습니다."
+                           FontWeight="SemiBold"
+                           FontSize="15"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           FontSize="12">
+                    앱 실행 파일과 같은 폴더에 bin\ 폴더를 만들고
+                    yt-dlp.exe 와 ffmpeg.exe 를 그 안에 넣어주세요.
+                    <LineBreak/>
+                    <LineBreak/>
+                    📁 YTDownloader.exe
+                    <LineBreak/>
+                    📁 bin\yt-dlp.exe
+                    <LineBreak/>
+                    📁 bin\ffmpeg.exe
+                </TextBlock>
+
+                <Button x:Name="RetryButton"
+                        Content="다시 확인"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Click="RetryButton_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ══ 레이어 3: 다운로드 진행 오버레이 ════════════════════════════════ -->
+        <Grid x:Name="ProgressOverlay"
+              Visibility="Collapsed"
+              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+            <!-- 진행 카드 -->
+            <Border CornerRadius="16"
+                    Padding="36,28"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    MinWidth="260"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    Background="{ThemeResource LayerFillColorDefaultBrush}">
+                <StackPanel Spacing="18" HorizontalAlignment="Center">
+
+                    <ProgressRing x:Name="DownloadRing"
+                                  IsActive="True"
+                                  Width="36" Height="36"
+                                  HorizontalAlignment="Center"/>
+
+                    <TextBlock x:Name="StatusText"
+                               Text="다운로드 시작..."
+                               FontWeight="SemiBold"
+                               FontSize="14"
+                               HorizontalAlignment="Center"/>
+
+                    <ProgressBar x:Name="DownloadProgressBar"
+                                 Value="0"
+                                 Maximum="1"
+                                 Width="210"
+                                 HorizontalAlignment="Center"/>
+
+                    <TextBlock x:Name="ProgressPercentText"
+                               Text=""
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                    <!-- 완료 버튼: 다운로드 끝나면 표시 -->
+                    <Button x:Name="DoneButton"
+                            Content="완료"
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Visibility="Collapsed"
+                            Click="DoneButton_Click"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+    </Grid>
+</Window>

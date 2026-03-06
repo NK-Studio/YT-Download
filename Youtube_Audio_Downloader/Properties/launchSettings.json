@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Youtube_Audio_Downloader (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Youtube_Audio_Downloader (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

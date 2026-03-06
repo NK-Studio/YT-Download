@@ -1,2 +1,69 @@
+# ==========================================
+# Visual Studio / IDE
+# ==========================================
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.vsix
+*.vssscc
 
-.DS_Store
+# ==========================================
+# Build & Compilation Results
+# ==========================================
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Gg]enerated\ [Ff]iles/
+
+# ==========================================
+# WinUI 3 / Windows App SDK / UWP / MSIX
+# ==========================================
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+_pkginfo.txt
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+*.appxupload
+*.msixupload
+*.appxsym
+
+# ==========================================
+# NuGet Packages
+# ==========================================
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+# ==========================================
+# Logs & Caches
+# ==========================================
+*.log
+*.cache
+*.tmp
+*.swp
+*.err
+*.bak
+
+# ==========================================
+# Local Configuration & Keys (선택 사항)
+# ==========================================
+# 로컬 테스트용 서명 인증서가 있다면 주석을 해제하세요.
+# *_TemporaryKey.pfx
