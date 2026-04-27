@@ -7,10 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B80DD9622F9F8A210088C5F1 /* _internal in Resources */ = {isa = PBXBuildFile; fileRef = B80DD9602F9F8A210088C5F1 /* _internal */; };
+		B80DD9632F9F8A210088C5F1 /* yt-dlp_macos in Resources */ = {isa = PBXBuildFile; fileRef = B80DD9612F9F8A210088C5F1 /* yt-dlp_macos */; };
+		B80DD9652F9F8BBD0088C5F1 /* ffmpeg in Resources */ = {isa = PBXBuildFile; fileRef = B80DD9642F9F8BBD0088C5F1 /* ffmpeg */; };
 		B8E2FFBF2EDEA43000C61914 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8E2FFBE2EDEA43000C61914 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B80DD9602F9F8A210088C5F1 /* _internal */ = {isa = PBXFileReference; lastKnownFileType = folder; path = _internal; sourceTree = "<group>"; };
+		B80DD9612F9F8A210088C5F1 /* yt-dlp_macos */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "yt-dlp_macos"; sourceTree = "<group>"; };
+		B80DD9642F9F8BBD0088C5F1 /* ffmpeg */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = ffmpeg; sourceTree = "<group>"; };
 		B8E2FFA92EDE742F00C61914 /* Nupy YT Download.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nupy YT Download.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8E2FFBE2EDEA43000C61914 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -37,6 +43,9 @@
 		B8E2FFA02EDE742F00C61914 = {
 			isa = PBXGroup;
 			children = (
+				B80DD9642F9F8BBD0088C5F1 /* ffmpeg */,
+				B80DD9602F9F8A210088C5F1 /* _internal */,
+				B80DD9612F9F8A210088C5F1 /* yt-dlp_macos */,
 				B8E2FFBE2EDEA43000C61914 /* Localizable.xcstrings */,
 				B8E2FFAB2EDE742F00C61914 /* YTDownloader */,
 				B8E2FFAA2EDE742F00C61914 /* Products */,
@@ -117,6 +126,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8E2FFBF2EDEA43000C61914 /* Localizable.xcstrings in Resources */,
+				B80DD9622F9F8A210088C5F1 /* _internal in Resources */,
+				B80DD9652F9F8BBD0088C5F1 /* ffmpeg in Resources */,
+				B80DD9632F9F8A210088C5F1 /* yt-dlp_macos in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,7 +281,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 9PA2HRW995;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -308,7 +320,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 9PA2HRW995;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
