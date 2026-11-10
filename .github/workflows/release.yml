@@ -15,8 +15,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # 빌드 작업들이 같은 릴리스에 올리도록 릴리스를 먼저 하나 만든다.
+  # 같은 버전의 릴리스가 이미 있으면 그대로 쓰고 파일만 교체한다.
+  create-release:
+    name: 릴리스 준비
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.release.outputs.release_id }}
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="$(grep -m1 '^version' Cargo.toml | sed -E 's/.*"(.+)".*/\1/')"
+          TAG="v$VERSION"
+          if ! gh release view "$TAG" > /dev/null 2>&1; then
+            gh release create "$TAG" --draft --target "$GITHUB_SHA" --title "YT Downloader $TAG" --notes-file .github/release-notes.md
+          fi
+          echo "release_id=$(gh release view "$TAG" --json databaseId -q .databaseId)" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
   build:
     name: ${{ matrix.name }}
+    needs: create-release
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -34,15 +57,15 @@ jobs:
             target: aarch64-pc-windows-msvc
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 9
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 26
           cache: pnpm
 
       - uses: dtolnay/rust-toolchain@stable
@@ -102,30 +125,20 @@ jobs:
             echo "::warning::App Store Connect API 키 시크릿이 없어 공증 없이 서명만 합니다."
           fi
 
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v__VERSION__
-          releaseName: YT Downloader v__VERSION__
-          releaseBody: |
-            ## 설치
-
-            - **macOS (Apple Silicon)**: `.dmg`를 열고 앱을 Applications 폴더로 끌어다 놓는다. Intel Mac은 지원하지 않는다.
-            - **Windows**: `x64-setup.exe` 또는 `arm64-setup.exe`를 실행한다.
-          releaseDraft: true
-          prerelease: false
+          releaseId: ${{ needs.create-release.outputs.release_id }}
           args: --target ${{ matrix.target }}
 
   publish:
     name: 릴리스 공개
-    needs: build
+    needs: [create-release, build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: 초안 릴리스를 공개로 전환
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION="$(grep -m1 '^version' Cargo.toml | sed -E 's/.*"(.+)".*/\1/')"
-          gh release edit "v$VERSION" --draft=false --latest
+          GH_REPO: ${{ github.repository }}
+        run: gh release edit "${{ needs.create-release.outputs.tag }}" --draft=false --latest
