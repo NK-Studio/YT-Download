@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>YT Downloader</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="toolbar" data-tauri-drag-region>
+        <span class="toolbar-title" data-tauri-drag-region>YT Downloader</span>
+        <div class="toolbar-items" id="toolbar-items"></div>
+      </header>
+      <section class="search" id="search">
+        <label class="field">
+          <span class="field-icon" id="field-icon"></span>
+          <input id="url" type="text" placeholder="YouTube 링크를 붙여넣으세요" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          <button class="field-clear" id="url-clear" type="button" aria-label="지우기" hidden></button>
+        </label>
+        <p class="field-error" id="url-error" hidden></p>
+      </section>
+      <main class="content" id="content"></main>
+    </div>
+    <div class="sheet-backdrop" id="sheet" hidden></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+[package]
+name = "nupy-ytdownloader"
+description = "YT Downloader"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "nupy-ytdownloader"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2.7.4", features = [] }
+
+[dependencies]
+nupy-core = { path = "../crates/nupy-core" }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+tauri = { version = "2.12.5", features = ["macos-private-api"] }
+tauri-plugin-dialog = "2.8.4"
+tauri-plugin-opener = "2.7.2"
+tokio = { version = "1.54.1", features = ["sync"] }
+tokio-util = "0.7.20"
+
+[target."cfg(windows)".dependencies]
+windows-version = "0.100.0"

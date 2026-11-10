@@ -1,0 +1,26 @@
+{
+  "name": "nupy-ytdownloader",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev:macos": "vite --mode macos",
+    "dev:windows": "vite --mode windows",
+    "build:macos": "tsc --noEmit && vite build --mode macos",
+    "build:windows": "tsc --noEmit && vite build --mode windows",
+    "app:dev": "tauri dev",
+    "app:build:macos": "tauri build --target aarch64-apple-darwin",
+    "app:build:windows": "tauri build",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2",
+    "@tauri-apps/plugin-opener": "^2"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7"
+  }
+}

@@ -1,12 +1,9 @@
-
 .DS_Store
 
-# Bundled binaries (yt-dlp + ffmpeg) — Xcode가 Copy Bundle Resources로 가져가지만 git에는 포함하지 않음
-/yt-dlp
-/yt-dlp_macos
-/ffmpeg
-/_internal/
+# Rust / Tauri
+/target/
+/src-tauri/gen/
 
-# Xcode user state
-**/xcuserdata/
-**/*.xcuserstate
+# Frontend
+/node_modules/
+/dist/

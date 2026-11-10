@@ -1,0 +1,131 @@
+name: Release
+
+# v2.0.0 같은 태그를 푸시하면 빌드해서 GitHub 릴리스에 올린다.
+# Actions 탭에서 수동 실행하면 src-tauri의 현재 버전으로 릴리스를 만든다.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Intel Mac은 지원하지 않는다.
+          - name: macOS (Apple Silicon)
+            os: macos-latest
+            target: aarch64-apple-darwin
+          - name: Windows (x64)
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - name: Windows (arm64)
+            os: windows-latest
+            target: aarch64-pc-windows-msvc
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - run: pnpm install --frozen-lockfile
+
+      # Developer ID 인증서를 임시 키체인에 넣고, 공증에 쓸 App Store Connect API 키를 준비한다.
+      # 시크릿이 없으면 건너뛰고 서명 없이 빌드한다.
+      - name: Apple 서명·공증 준비
+        if: runner.os == 'macOS'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
+        run: |
+          if [ -z "$APPLE_CERTIFICATE" ]; then
+            echo "::warning::APPLE_CERTIFICATE 시크릿이 없어 서명 없이 빌드합니다."
+            exit 0
+          fi
+
+          KEYCHAIN="$RUNNER_TEMP/build.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -hex 24)"
+          echo "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/certificate.p12"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -t 3600 -u "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$RUNNER_TEMP/certificate.p12" -k "$KEYCHAIN" -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN" > /dev/null
+          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
+          security default-keychain -s "$KEYCHAIN"
+          rm "$RUNNER_TEMP/certificate.p12"
+
+          IDENTITY="$(security find-identity -v -p codesigning "$KEYCHAIN" | grep 'Developer ID Application' | head -1 | sed -E 's/.*"(.+)"/\1/')"
+          if [ -z "$IDENTITY" ]; then
+            echo "::error::인증서에서 Developer ID Application 서명 ID를 찾지 못했습니다."
+            exit 1
+          fi
+          echo "APPLE_SIGNING_IDENTITY=$IDENTITY" >> "$GITHUB_ENV"
+
+          if [ -n "$APPLE_API_KEY_P8" ] && [ -n "$APPLE_API_KEY_ID" ] && [ -n "$APPLE_API_ISSUER_ID" ]; then
+            KEY_PATH="$RUNNER_TEMP/AuthKey_${APPLE_API_KEY_ID}.p8"
+            printf '%s\n' "$APPLE_API_KEY_P8" > "$KEY_PATH"
+            {
+              echo "APPLE_API_KEY=$APPLE_API_KEY_ID"
+              echo "APPLE_API_ISSUER=$APPLE_API_ISSUER_ID"
+              echo "APPLE_API_KEY_PATH=$KEY_PATH"
+            } >> "$GITHUB_ENV"
+          else
+            echo "::warning::App Store Connect API 키 시크릿이 없어 공증 없이 서명만 합니다."
+          fi
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v__VERSION__
+          releaseName: YT Downloader v__VERSION__
+          releaseBody: |
+            ## 설치
+
+            - **macOS (Apple Silicon)**: `.dmg`를 열고 앱을 Applications 폴더로 끌어다 놓는다. Intel Mac은 지원하지 않는다.
+            - **Windows**: `x64-setup.exe` 또는 `arm64-setup.exe`를 실행한다.
+          releaseDraft: true
+          prerelease: false
+          args: --target ${{ matrix.target }}
+
+  publish:
+    name: 릴리스 공개
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 초안 릴리스를 공개로 전환
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="$(grep -m1 '^version' Cargo.toml | sed -E 's/.*"(.+)".*/\1/')"
+          gh release edit "v$VERSION" --draft=false --latest

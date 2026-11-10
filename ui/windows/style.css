@@ -1,0 +1,293 @@
+/* Windows 11 / WinUI 3 (Fluent 2) 스타일. Mica 를 지원하면 창 배경은 투명하게 두고 Mica 가 비치게 한다. */
+
+:root {
+  color-scheme: light dark;
+  --accent: #005fb8;
+  --accent-hover: #1a6fc0;
+  --accent-press: #3381c8;
+  --on-accent: #ffffff;
+  --text: rgba(0, 0, 0, 0.894);
+  --text-2: rgba(0, 0, 0, 0.606);
+  --text-3: rgba(0, 0, 0, 0.446);
+  --text-disabled: rgba(0, 0, 0, 0.361);
+  --solid-bg: #f3f3f3;
+  --layer: rgba(255, 255, 255, 0.5);
+  --card: rgba(255, 255, 255, 0.7);
+  --card-stroke: rgba(0, 0, 0, 0.0578);
+  --control: rgba(255, 255, 255, 0.7);
+  --control-hover: rgba(249, 249, 249, 0.5);
+  --control-press: rgba(249, 249, 249, 0.3);
+  --control-disabled: rgba(249, 249, 249, 0.3);
+  --control-stroke: rgba(0, 0, 0, 0.0578);
+  --control-stroke-bottom: rgba(0, 0, 0, 0.1622);
+  --text-stroke: rgba(0, 0, 0, 0.4458);
+  --input-focus: #ffffff;
+  --subtle-hover: rgba(0, 0, 0, 0.0373);
+  --subtle-press: rgba(0, 0, 0, 0.0241);
+  --track: rgba(0, 0, 0, 0.4458);
+  --dialog: #ffffff;
+  --dialog-footer: #f3f3f3;
+  --smoke: rgba(0, 0, 0, 0.3);
+  --info-bg: rgba(246, 246, 246, 0.5);
+  --error-bg: #fde7e9;
+  --error-fg: #c42b1c;
+  --warning-bg: #fff4ce;
+  --warning-fg: #9d5d00;
+  --success-fg: #0f7b0f;
+  --font: "Segoe UI Variable Text", "Segoe UI", "Malgun Gothic", system-ui, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI", "Malgun Gothic", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #60cdff;
+    --accent-hover: #5bb9e6;
+    --accent-press: #56a6cc;
+    --on-accent: #000000;
+    --text: #ffffff;
+    --text-2: rgba(255, 255, 255, 0.786);
+    --text-3: rgba(255, 255, 255, 0.544);
+    --text-disabled: rgba(255, 255, 255, 0.363);
+    --solid-bg: #202020;
+    --layer: rgba(58, 58, 58, 0.3);
+    --card: rgba(255, 255, 255, 0.0512);
+    --card-stroke: rgba(0, 0, 0, 0.1);
+    --control: rgba(255, 255, 255, 0.0605);
+    --control-hover: rgba(255, 255, 255, 0.0837);
+    --control-press: rgba(255, 255, 255, 0.0326);
+    --control-disabled: rgba(255, 255, 255, 0.0419);
+    --control-stroke: rgba(255, 255, 255, 0.0698);
+    --control-stroke-bottom: rgba(255, 255, 255, 0.0465);
+    --text-stroke: rgba(255, 255, 255, 0.5442);
+    --input-focus: #1e1e1e;
+    --subtle-hover: rgba(255, 255, 255, 0.0605);
+    --subtle-press: rgba(255, 255, 255, 0.0419);
+    --track: rgba(255, 255, 255, 0.5442);
+    --dialog: #2b2b2b;
+    --dialog-footer: #202020;
+    --info-bg: rgba(255, 255, 255, 0.0326);
+    --error-bg: #442726;
+    --error-fg: #ff99a4;
+    --warning-bg: #433519;
+    --warning-fg: #fce100;
+    --success-fg: #6ccb5f;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: transparent;
+  color: var(--text);
+  font: 14px/20px var(--font);
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+  overflow: hidden;
+}
+/* Windows 10(또는 브라우저 미리보기)에서는 Mica 대신 단색 배경 */
+html.no-mica body, html.preview body { background: var(--solid-bg); }
+
+[hidden] { display: none !important; }
+.selectable { -webkit-user-select: text; user-select: text; cursor: text; }
+.caption { font-size: 12px; line-height: 16px; }
+.body { font-size: 14px; line-height: 20px; }
+.body-strong { font-size: 14px; line-height: 20px; font-weight: 600; }
+.subtitle { font: 600 20px/28px var(--font-display); }
+.secondary { color: var(--text-2); }
+.tertiary { color: var(--text-3); }
+.error-text { color: var(--error-fg); }
+.warning-text { color: var(--warning-fg); }
+.success-text { color: var(--success-fg); }
+.ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Segoe Fluent Icons 글리프 */
+.fi {
+  display: inline-grid; place-items: center;
+  width: 16px; height: 16px; flex: none;
+  font: normal 16px/1 "Segoe Fluent Icons", "Segoe MDL2 Assets";
+}
+.fi svg { width: 100%; height: 100%; }
+.fi.hero { width: 48px; height: 48px; font-size: 48px; }
+
+#app { height: 100%; display: flex; flex-direction: column; }
+
+.page-header { flex: none; display: flex; align-items: center; gap: 12px; padding: 16px 20px 12px; }
+.title { margin: 0; font: 600 20px/28px var(--font-display); white-space: nowrap; }
+.header-items { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.header-status { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); }
+
+/* ───── Button ───── */
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 32px; padding: 5px 12px 6px;
+  border: 1px solid var(--control-stroke); border-bottom-color: var(--control-stroke-bottom);
+  border-radius: 4px;
+  background: var(--control);
+  color: var(--text);
+  font: 14px/20px var(--font);
+  white-space: nowrap;
+  background-clip: padding-box;
+}
+.button:hover { background: var(--control-hover); }
+.button:active { background: var(--control-press); color: var(--text-2); border-bottom-color: var(--control-stroke); }
+.button:disabled { background: var(--control-disabled); color: var(--text-disabled); }
+.button:focus-visible { outline: 2px solid var(--text); outline-offset: 1px; }
+.button.accent {
+  background: var(--accent); color: var(--on-accent);
+  border-color: rgba(255, 255, 255, 0.08); border-bottom-color: rgba(0, 0, 0, 0.4);
+}
+.button.accent:hover { background: var(--accent-hover); }
+.button.accent:active { background: var(--accent-press); color: color-mix(in srgb, var(--on-accent) 80%, transparent); }
+.button.accent:disabled { background: var(--text-disabled); color: var(--on-accent); border-color: transparent; }
+.button.subtle { background: transparent; border-color: transparent; }
+.button.subtle:hover { background: var(--subtle-hover); }
+.button.subtle:active { background: var(--subtle-press); }
+.button.icon-only { padding: 0; width: 32px; }
+
+/* ───── TextBox ───── */
+.search { flex: none; display: flex; gap: 8px; padding: 0 20px 16px; }
+.textbox {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 8px;
+  height: 32px; padding: 0 4px 0 11px;
+  border: 1px solid var(--control-stroke); border-bottom-color: var(--text-stroke);
+  border-radius: 4px;
+  background: var(--control);
+  position: relative;
+}
+.textbox:hover { background: var(--control-hover); }
+.textbox:focus-within { background: var(--input-focus); border-bottom-color: transparent; }
+.textbox:focus-within::after {
+  content: ""; position: absolute; left: -1px; right: -1px; bottom: -1px; height: 2px;
+  background: var(--accent); border-radius: 0 0 4px 4px;
+}
+.textbox-icon { color: var(--text-2); display: grid; }
+.textbox input {
+  flex: 1; min-width: 0; height: 100%;
+  border: 0; outline: 0; background: transparent;
+  font: 14px/20px var(--font); color: var(--text);
+  -webkit-user-select: text; user-select: text;
+}
+.textbox input::placeholder { color: var(--text-2); }
+.textbox input:disabled { color: var(--text-disabled); }
+.textbox-clear {
+  width: 26px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: var(--text-2);
+  display: grid; place-items: center;
+}
+.textbox-clear .fi { width: 12px; height: 12px; font-size: 10px; }
+.textbox-clear:hover { background: var(--subtle-hover); }
+
+/* ───── InfoBar ───── */
+#infobars { flex: none; display: flex; flex-direction: column; gap: 8px; padding: 0 20px; }
+#infobars:not(:empty) { padding-bottom: 12px; }
+.infobar {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 48px; padding: 8px 8px 8px 16px;
+  border: 1px solid var(--card-stroke); border-radius: 4px;
+  background: var(--info-bg);
+  animation: fade-in 0.2s ease-out;
+}
+.infobar-icon { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; color: var(--accent); }
+.infobar.error { background: var(--error-bg); }
+.infobar.error .infobar-icon { color: var(--error-fg); }
+.infobar.warning { background: var(--warning-bg); }
+.infobar.warning .infobar-icon { color: var(--warning-fg); }
+.infobar-text { flex: 1; min-width: 0; font-size: 14px; line-height: 20px; white-space: pre-wrap; word-break: break-word; max-height: 100px; overflow-y: auto; }
+.infobar-text strong { font-weight: 600; }
+
+/* ───── 본문 ───── */
+.content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.scroll { flex: 1; overflow-y: auto; padding: 0 20px 20px; }
+.placeholder {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; padding: 24px 32px 56px; text-align: center;
+}
+.placeholder h2 { margin: 12px 0 0; }
+.placeholder p { margin: 0; max-width: 360px; }
+.placeholder .button { margin-top: 16px; }
+.placeholder .caption { margin-top: 8px; }
+.setup-progress { width: 240px; margin-top: 12px; }
+
+/* ───── Card ───── */
+.card {
+  border: 1px solid var(--card-stroke); border-radius: 8px;
+  background: var(--card);
+  background-clip: padding-box;
+}
+.video { display: flex; gap: 12px; padding: 12px; margin-bottom: 20px; animation: fade-in 0.2s ease-out; }
+.thumb {
+  flex: none; width: 144px; aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden;
+  background: var(--subtle-hover); display: grid; place-items: center;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.video-text { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.video-text p { margin: 0; }
+.video-text .body-strong { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.section { margin-bottom: 20px; display: flex; flex-direction: column; gap: 4px; animation: fade-in 0.25s ease-out; }
+.section-title { margin: 0 0 4px; }
+.section-note { margin: 4px 0 0; }
+
+/* Windows 설정 앱의 SettingsCard */
+.settings-card { display: flex; align-items: center; gap: 16px; min-height: 64px; padding: 12px 16px; }
+.settings-card:hover { background: var(--control-hover); }
+.card-icon { color: var(--text); width: 20px; height: 20px; font-size: 20px; }
+.card-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.card-text .caption { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.size { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* ───── ProgressBar / ProgressRing ───── */
+.progressbar { position: relative; height: 3px; width: 100%; display: flex; align-items: center; overflow: hidden; border-radius: 2px; }
+.progressbar::before { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: var(--track); }
+.progressbar-fill { position: relative; height: 3px; border-radius: 2px; background: var(--accent); transition: width 0.25s ease-out; }
+.progressbar.indeterminate::before { opacity: 0; }
+.progressbar.indeterminate .progressbar-fill { width: 40% !important; animation: indeterminate 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes indeterminate { from { transform: translateX(-100%); } to { transform: translateX(260%); } }
+
+.ring {
+  width: 32px; height: 32px; border-radius: 50%; flex: none;
+  border: 3px solid transparent; border-top-color: var(--accent); border-right-color: var(--accent);
+  animation: ring 1.1s cubic-bezier(0.5, 0.2, 0.5, 0.8) infinite;
+}
+.ring.large { width: 48px; height: 48px; border-width: 4px; }
+.ring.small { width: 16px; height: 16px; border-width: 2px; }
+@keyframes ring { to { transform: rotate(360deg); } }
+
+/* ───── ContentDialog ───── */
+.smoke {
+  position: fixed; inset: 0; z-index: 10;
+  display: grid; place-items: center; padding: 20px;
+  background: var(--smoke);
+}
+.dialog {
+  width: min(400px, 100%);
+  border-radius: 8px; overflow: hidden;
+  background: var(--dialog);
+  border: 1px solid var(--card-stroke);
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.19), 0 2px 21px rgba(0, 0, 0, 0.15);
+}
+.smoke.entering { animation: fade-in 0.15s ease-out; }
+.smoke.entering .dialog { animation: dialog-in 0.25s cubic-bezier(0, 0, 0, 1); }
+.smoke.closing { animation: fade-in 0.15s ease-in reverse forwards; }
+.dialog-body { padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+.dialog-title { margin: 0 0 4px; display: flex; align-items: center; gap: 8px; }
+.dialog-title .fi { width: 20px; height: 20px; font-size: 20px; }
+.dialog-body p { margin: 0; }
+.status { white-space: pre-wrap; word-break: break-word; max-height: 140px; overflow-y: auto; font-variant-numeric: tabular-nums; }
+.dialog-body .progressbar { margin: 8px 0 4px; }
+.dialog-footer {
+  display: flex; gap: 8px; justify-content: flex-end;
+  padding: 24px; border-top: 1px solid var(--card-stroke);
+  background: var(--dialog-footer);
+}
+.dialog-footer .button { flex: 1; max-width: 50%; }
+
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes dialog-in { from { opacity: 0; transform: scale(1.05); } }
+
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-thumb { background: var(--text-3); border-radius: 6px; border: 4px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { border-width: 3px; }
