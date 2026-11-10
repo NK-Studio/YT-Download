@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "ui-macos", "runtimeExecutable": "pnpm", "runtimeArgs": ["dev:macos"], "port": 1420 },
+    { "name": "ui-windows", "runtimeExecutable": "pnpm", "runtimeArgs": ["dev:windows"], "port": 1421 }
+  ]
+}
